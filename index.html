@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H63 BRO VPN</title>
+    <!-- Подключаем фановый и живой шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f0c1b;
+            --panel-bg: #16122c;
+            --accent-orange: #ff7640;
+            --accent-cyan: #00f0ff;
+            --accent-yellow: #ffd000;
+            --text-color: #ffffff;
+            --border-drawn: 3px solid #2d2554;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Пятна краски на фоне */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 118, 64, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.08) 0px, transparent 40%);
+        }
+
+        /* Логотип в стиле мазков кисти */
+        header {
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+        }
+
+        .logo {
+            font-family: 'Caveat', cursive;
+            font-size: 4.5rem;
+            line-height: 1;
+            margin: 0;
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+        .logo span:nth-child(1) { color: var(--accent-orange); text-shadow: 2px 2px 0px #000; }
+        .logo span:nth-child(2) { color: var(--accent-cyan); text-shadow: 2px 2px 0px #000; margin: 0 10px; }
+        .logo span:nth-child(3) { color: var(--accent-yellow); text-shadow: 2px 2px 0px #000; }
+
+        /* Кастомные "неровные" вкладки */
+        nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 90%;
+            max-width: 650px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: var(--panel-bg);
+            color: #8c85b3;
+            border: 2px solid #2d2554;
+            padding: 10px 25px;
+            cursor: pointer;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; /* Эффект нарисованного от руки */
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-color);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            color: #000;
+            font-weight: 800;
+            border-color: #fff;
+            transform: scale(1.05) rotate(1deg);
+        }
+        nav .tab-btn:nth-child(1).active { background: var(--accent-orange); box-shadow: 0 5px 0px #b34419; }
+        nav .tab-btn:nth-child(2).active { background: var(--accent-cyan); box-shadow: 0 5px 0px #00a2b0; }
+        nav .tab-btn:nth-child(3).active { background: var(--accent-yellow); box-shadow: 0 5px 0px #b39200; }
+
+        /* Главная доска */
+        main {
+            width: 90%;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .board {
+            background-color: var(--panel-bg);
+            border: 3px solid #3c336e;
+            border-radius: 20px 10px 20px 12px/14px 20px 12px 20px; /* Асимметричная рамка */
+            padding: 40px;
+            box-shadow: 12px 12px 0px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        /* Декоративные "уголки" рамы */
+        .board::before {
+            content: '★';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            color: #3c336e;
+            font-size: 1.2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .board h2 {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            margin-top: 0;
+            color: var(--accent-yellow);
+            letter-spacing: 1px;
+        }
+
+        .board p {
+            color: #b1a9db;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        /* Кнопка генерации в виде смачного мазка */
+        .paint-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            color: #fff;
+            background: #1e62ff;
+            border: 3px solid #fff;
+            padding: 18px 40px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 10px 40px 15px 30px/20px 15px 35px 12px;
+            box-shadow: 0 6px 0px #0e3796;
+            transition: all 0.1s ease;
+            margin: 20px 0 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paint-btn:hover:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 4px 0px #0e3796;
+        }
+
+        .paint-btn:active:not(:disabled) {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0px #0e3796;
+        }
+
+        .paint-btn:disabled {
+            background: #2d264f;
+            border-color: #4a3f7d;
+            color: #63569c;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Индикатор загрузки */
+        .loader-text {
+            display: none;
+            font-family: 'Caveat', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-cyan);
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        /* Контейнер выдачи ссылки */
+        .link-canvas {
+            display: none;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 5px 12px 8px 15px/10px 5px 12px 6px;
+            margin-top: 25px;
+            position: relative;
+            box-shadow: inset 3px 3px 0px rgba(0,0,0,0.15);
+        }
+
+        .link-text {
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.95rem;
+            word-break: break-all;
+            display: block;
+            padding-right: 120px;
+        }
+
+        .clip-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-1deg);
+            background: var(--accent-orange);
+            color: #fff;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 2px 2px 0px #000;
+        }
+        .clip-btn:hover {
+            background: #ff5411;
+        }
+
+        /* Ссылка на ТГ внутри панели */
+        .tg-alert {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .tg-alert a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--accent-cyan);
+        }
+        .tg-alert a:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        /* Крафтовая инструкция */
+        .step-container {
+            margin-top: 25px;
+        }
+
+        .step-card {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed #3c336e;
+        }
+
+        .step-num {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            background: var(--accent-cyan);
+            color: #000;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50% 40% 45% 50%;
+            transform: rotate(-5deg);
+            font-weight: bold;
+        }
+
+        .step-txt {
+            margin: 0;
+            font-size: 1rem;
+            color: #d1caee;
+            line-height: 1.5;
+        }
+        .step-txt strong {
+            color: #fff;
+            border-bottom: 2px dotted var(--accent-orange);
+        }
+
+        /* Подвал */
+        footer {
+            margin-top: auto;
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .tg-footer-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #fff;
+            background: #229ED9; /* Оригинальный цвет Telegram */
+            border: 2px solid #fff;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tg-footer-btn:hover {
+            transform: translateY(-2px) rotate(-1deg);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.4);
+            background: #1e8fc4;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>H63</span><span>BRO</span><span>VPN</span>
+        </div>
+    </header>
+
+    <!-- ВКЛАДКИ -->
+    <nav>
+        <button class="tab-btn active" onclick="switchTab(event, 'gen-tab')">Генератор</button>
+        <button class="tab-btn" onclick="switchTab(event, 'guide-tab')">Инструкция</button>
+        <button class="tab-btn" onclick="switchTab(event, 'about-tab')">About BRO</button>
+    </nav>
+
+    <!-- ДОСКА С КОНТЕНТОМ -->
+    <main>
+        <div class="board">
+            
+            <!-- ОКНО 1: ГЕНЕРАТОР -->
+            <div id="gen-tab" class="tab-content active">
+                <h2>🔥 Твой Ключ к Свободному Интернету!</h2>
+                <p>Хватит терпеть затупы сети. Нажимай кнопку пониже, забирай свою персональную подписку и заходи на любые ресурсы без ограничений.</p>
+                
+                <button class="paint-btn" id="go-btn">Генерировать ссылку VPN</button>
+                
+                <div class="tg-alert">
+                    Следи за обновлениями серверов в ТГ: <a href="https://t.me/h63bro" target="_blank">@h63bro</a>
+                </div>
+
+                <div class="loader-text" id="loader">
+                    <span>⏳ Создание подписки... </span><span id="percent-val">0%</span>
+                </div>
+
+                <div class="link-canvas" id="link-box">
+                    <span class="link-text" id="target-link"></span>
+                    <button class="clip-btn" id="copy-btn">КОПИРОВАТЬ</button>
+                </div>
+            </div>
+
+            <!-- ОКНО 2: ИНСТРУКЦИЯ -->
+            <div id="guide-tab" class="tab-content">
+                <h2>Как Использовать Бро VPN:</h2>
+                
+                <div class="step-container">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <p class="step-txt">Скачай клиент под свою систему. Подойдет <strong>v2rayNG</strong> на Android, <strong>v2rayN</strong> на Windows или <strong>Shadowrocket / Streisand</strong> на iPhone.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <p class="step-txt">Иди во вкладку «Генератор» и скопируй созданный URL-адрес твоей подписки.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <p class="step-txt">Открой приложение, найди пункт настройки подписок (<strong>Subscription setup</strong>), вставь ссылку туда, обнови данные и нажимай кнопку <strong>Подключиться</strong>!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ОКНО 3: О СЕРВИСЕ -->
+            <div id="about-tab" class="tab-content">
+                <h2>Пару слов про проект</h2>
+                <p>H63 BRO VPN — это не коммерческая корпорация со скучным дизайном. Это приватные сервера "для своих", настроенные на максимальный обход протоколов блокировок DPI.</p>
+                <p>Трафик полностью маскируется под обычный веб-серфинг, сервера не режут скорость, а лимитов на гигабайты просто не существует. Пользуйся на здоровье!</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ПОДВАЛ С КНОПКОЙ НА ТГ -->
+    <footer>
+        <a href="https://t.me/h63bro" target="_blank" class="tg-footer-btn">
+            ✈ Наш Telegram: @h63bro
+        </a>
+    </footer>
+
+    <script>
+        const myGistUrl = "https://gist.githubusercontent.com/bitmrazey-eng/a2807c1c68c007244d20dc8408fbf831/raw/59dba2c29b6f420022ceebf621a34739b8775d34/GetNewVPN";
+
+        // Переключение вкладок
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Логика кнопки генератора с процентами
+        const goBtn = document.getElementById('go-btn');
+        const loader = document.getElementById('loader');
+        const percentVal = document.getElementById('percent-val');
+        const linkBox = document.getElementById('link-box');
+        const targetLink = document.getElementById('target-link');
+        const copyBtn = document.getElementById('copy-btn');
+
+        goBtn.addEventListener('click', () => {
+            goBtn.disabled = true;
+            linkBox.style.display = 'none';
+            loader.style.display = 'block';
+            
+            let count = 0;
+            
+            const timer = setInterval(() => {
+                count += Math.floor(Math.random() * 6) + 3; // Имитируем живую скорость
+                
+                if (count >= 100) {
+                    count = 100;
+                    clearInterval(timer);
+                    
+                    // Показываем ссылку
+                    loader.style.display = 'none';
+                    targetLink.textContent = myGistUrl;
+                    linkBox.style.display = 'block';
+                    
+                    goBtn.disabled = false;
+                    goBtn.textContent = 'Сгенерировано повторно!';
+                }
+                percentVal.textContent = count + '%';
+            }, 80);
+        });
+
+        // Кнопка копирования
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(myGistUrl).then(() => {
+                copyBtn.textContent = 'ГОТОВО! 🎉';
+                copyBtn.style.background = '#00f0ff';
+                copyBtn.style.color = '#000';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = 'КОПИРОВАТЬ';
+                    copyBtn.style.background = 'var(--accent-orange)';
+                    copyBtn.style.color = '#fff';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
