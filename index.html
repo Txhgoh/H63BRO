@@ -3,459 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H63 BRO VPN</title>
-    <!-- Подключаем живые и дерзкие шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
-    
+    <title>H63BRO VPN — Личный кабинет</title>
     <style>
-        :root {
-            --bg: #0d0b18;
-            --panel: #17142b;
-            --orange: #ff6b35;
-            --cyan: #00e5ff;
-            --yellow: #ffee58;
-            --text: #ffffff;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #09090b; /* Ультра-черный */
+            color: #f4f4f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #141417; /* Антрацит */
+            border: 1px solid #27272a;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .logo-area {
+            margin-bottom: 25px;
+        }
+
+        .logo-text {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        p {
+            color: #a1a1aa;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .steps-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            /* Эффект брызг краски на фоне */
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 85% 85%, rgba(0, 229, 255, 0.1) 0px, transparent 50%);
+            gap: 14px;
         }
 
-        header {
-            text-align: center;
-            padding: 40px 20px 10px 20px;
-        }
-
-        /* Нарисованный от руки логотип */
-        .logo {
-            font-family: 'Caveat', cursive;
-            font-size: 4.8rem;
-            margin: 0;
-            display: inline-block;
-            transform: rotate(-3deg);
-            filter: drop-shadow(3px 3px 0px #000);
-        }
-        .logo span:nth-child(1) { color: var(--orange); }
-        .logo span:nth-child(2) { color: var(--cyan); margin: 0 8px; }
-        .logo span:nth-child(3) { color: var(--yellow); }
-
-        /* Вкладки в стиле небрежных наклеек */
-        nav {
+        .btn {
             display: flex;
-            gap: 12px;
-            margin-bottom: 35px;
-            width: 90%;
-            max-width: 600px;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            background: var(--panel);
-            color: #7b74a3;
-            border: 3px solid #28234d;
-            padding: 12px 26px;
-            cursor: pointer;
-            /* Неровные края, как у кусков изоленты */
-            border-radius: 20px 5px 15px 7px/7px 15px 5px 20px;
-            transition: all 0.15s ease;
-        }
-
-        .tab-btn:hover {
-            color: var(--text);
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .tab-btn.active {
-            color: #000;
-            border-color: #fff;
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
-        }
-        nav .tab-btn:nth-child(1).active { background: var(--orange); }
-        nav .tab-btn:nth-child(2).active { background: var(--cyan); transform: scale(1.05) rotate(-1deg); }
-        nav .tab-btn:nth-child(3).active { background: var(--yellow); }
-
-        /* Основная крафтовая панель */
-        main {
-            width: 90%;
-            max-width: 680px;
-            margin-bottom: 40px;
-        }
-
-        .board {
-            background-color: var(--panel);
-            border: 4px solid #363061;
-            /* Полностью асимметричный контур "от руки" */
-            border-radius: 25px 12px 30px 15px/15px 25px 12px 35px;
-            padding: 40px;
-            box-shadow: 14px 14px 0px rgba(0, 0, 0, 0.45);
-            position: relative;
-        }
-
-        /* Закос под маркерный набросок */
-        .board::after {
-            content: '';
-            position: absolute;
-            inset: 4px;
-            border: 1px dashed rgba(255,255,255,0.07);
-            border-radius: inherit;
-            pointer-events: none;
-        }
-
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        .board h2 {
-            font-family: 'Caveat', cursive;
-            font-size: 2.8rem;
-            margin-top: 0;
-            color: var(--yellow);
-            letter-spacing: 1px;
-            line-height: 1.1;
-        }
-
-        .board p {
-            color: #b7b0df;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        /* Жирная аналоговая кнопка */
-        .paint-btn {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            color: #fff;
-            background: #255fff;
-            border: 3px solid #fff;
-            padding: 20px 30px;
             width: 100%;
-            cursor: pointer;
-            border-radius: 12px 35px 18px 40px/25px 15px 35px 15px;
-            box-shadow: 0 8px 0px #0b3cb3;
-            transition: all 0.05s ease;
-            margin: 25px 0 15px 0;
-        }
-
-        .paint-btn:hover:not(:disabled) {
-            transform: translateY(2px);
-            box-shadow: 0 6px 0px #0b3cb3;
-        }
-
-        .paint-btn:active:not(:disabled) {
-            transform: translateY(8px);
-            box-shadow: 0 0px 0px #0b3cb3;
-        }
-
-        .paint-btn:disabled {
-            background: #282442;
-            border-color: #433c6d;
-            color: #554e80;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Ожидание создания подписки */
-        .loader-text {
-            display: none;
-            font-family: 'Caveat', cursive;
-            font-size: 2rem;
-            color: var(--cyan);
-            text-align: center;
-            margin: 20px 0;
-            animation: jitter 0.3s infinite alternate;
-        }
-
-        @keyframes jitter {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            100% { transform: translate(-1px, -1px) rotate(-0.5deg); }
-        }
-
-        /* "Вырезка бумаги" для вывода ссылки */
-        .link-canvas {
-            display: none;
-            background: #fbfbfb;
-            color: #111;
-            padding: 22px;
-            border-radius: 4px 15px 6px 20px/12px 6px 18px 5px;
-            margin-top: 30px;
-            position: relative;
-            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.15), 5px 5px 0px rgba(0,0,0,0.2);
-            transform: rotate(-0.5deg);
-        }
-
-        .link-text {
-            font-family: monospace;
-            font-weight: 700;
-            font-size: 0.95rem;
-            word-break: break-all;
-            display: block;
-            padding-right: 130px;
-            color: #1a1a2e;
-        }
-
-        /* Кнопка скопировать */
-        .clip-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%) rotate(1deg);
-            background: var(--orange);
-            color: #fff;
-            border: 2px solid #111;
-            padding: 10px 18px;
-            font-weight: 900;
-            font-size: 0.95rem;
-            cursor: pointer;
-            border-radius: 6px;
-            box-shadow: 3px 3px 0px #111;
-            transition: transform 0.1s;
-        }
-        .clip-btn:active {
-            transform: translateY(-50%) translate(2px, 2px);
-            box-shadow: 0px 0px 0px #111;
-        }
-
-        .tg-alert {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .tg-alert a {
-            color: var(--cyan);
-            text-decoration: none;
-            font-weight: 700;
-            border-bottom: 2px dashed var(--cyan);
-        }
-        .tg-alert a:hover {
-            color: #fff;
-            border-bottom-color: transparent;
-        }
-
-        /* Шаги инструкции */
-        .step-card {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            background: rgba(255,255,255,0.02);
-            padding: 20px;
+            padding: 16px;
+            border: none;
             border-radius: 12px;
-            border: 2px dashed #363061;
-        }
-
-        .step-num {
-            font-family: 'Caveat', cursive;
-            font-size: 2.4rem;
-            background: var(--cyan);
-            color: #000;
-            min-width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 40% 60% 45% 55%/40% 40% 60% 60%; /* неидеальный круг */
-            transform: rotate(-6deg);
-            font-weight: bold;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
-        }
-
-        .step-txt {
-            margin: 0;
-            font-size: 1.05rem;
-            color: #ccc6ed;
-            line-height: 1.6;
-        }
-        .step-txt strong {
-            color: #fff;
-            background: rgba(255, 107, 53, 0.15);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Футер */
-        footer {
-            margin-top: auto;
-            padding: 30px;
-        }
-        
-        .tg-btn {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.1rem;
-            color: #fff;
-            background: #229ED9;
-            border: 3px solid #fff;
-            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: 600;
             text-decoration: none;
-            border-radius: 40px;
-            box-shadow: 6px 6px 0px rgba(0,0,0,0.4);
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
         }
-        
-        .tg-btn:hover {
-            transform: translateY(-3px) rotate(-1deg);
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
+
+        /* Кнопки заданий */
+        .btn-task {
+            background: #18181b;
+            color: #f4f4f5;
+            border: 1px solid #27272a;
+        }
+
+        .btn-task:hover {
+            background: #27272a;
+            border-color: #3f3f46;
+            transform: translateY(-1px);
+        }
+
+        /* Когда идет отсчет (кнопка временно выключена через CSS-класс) */
+        .btn-task.waiting {
+            background: #09090b !important;
+            color: #71717a !important;
+            border-color: #1c1c1f !important;
+            pointer-events: none; /* Запрещает повторный клик */
+            transform: none !important;
+        }
+
+        /* Выполненное задание */
+        .btn-task.completed {
+            background: rgba(34, 197, 94, 0.1) !important;
+            color: #22c55e !important;
+            border-color: rgba(34, 197, 94, 0.3) !important;
+            pointer-events: none;
+            transform: none !important;
+        }
+
+        /* Скрытая по умолчанию финальная кнопка */
+        #finalAction {
+            display: none;
+            margin-top: 15px;
+            background: #ffffff;
+            color: #09090b;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        #finalAction:hover {
+            background: #e4e4e7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.25);
+        }
+
+        .footer-note {
+            font-size: 12px;
+            color: #52525b;
+            line-height: 1.4;
+            margin-top: 20px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            <span>H63</span><span>BRO</span><span>VPN</span>
-        </div>
-    </header>
+<div class="card">
+    <div class="logo-area">
+        <div class="logo-text">H63BRO VPN</div>
+    </div>
+    
+    <p id="mainInstruction">Выполните оба условия, чтобы разблокировать доступ к VPN. Кнопки запустят таймер проверки (30 сек).</p>
 
-    <nav>
-        <button class="tab-btn active" onclick="switchTab(event, 'gen-tab')">Генератор</button>
-        <button class="tab-btn" onclick="switchTab(event, 'guide-tab')">Инструкция</button>
-        <button class="tab-btn" onclick="switchTab(event, 'about-tab')">About BRO</button>
-    </nav>
-
-    <main>
-        <div class="board">
-            
-            <!-- ВКЛАДКА 1: ГЕНЕРАТОР -->
-            <div id="gen-tab" class="tab-content active">
-                <h2>🔥 Твой Ключ к Свободному Интернету!</h2>
-                <p>Хватит терпеть затупы провайдеров. Кликай по кнопке, забирай свою обновленную подписку и летай по любым сайтам без ограничений.</p>
-                
-                <button class="paint-btn" id="go-btn">Генерировать ссылку VPN</button>
-                
-                <div class="tg-alert">
-                    Свежие новости и сервера тут: <a href="https://t.me/h63bro" target="_blank">@h63bro</a>
-                </div>
-
-                <div class="loader-text" id="loader">
-                    <span>⏳ Настраиваем прокси... </span><span id="percent-val">0%</span>
-                </div>
-
-                <div class="link-canvas" id="link-box">
-                    <span class="link-text" id="target-link"></span>
-                    <button class="clip-btn" id="copy-btn">КОПИРОВАТЬ</button>
-                </div>
-            </div>
-
-            <!-- ВКЛАДКА 2: ИНСТРУКЦИЯ -->
-            <div id="guide-tab" class="tab-content">
-                <h2>Как завести Бро VPN:</h2>
-                
-                <div style="margin-top: 25px;">
-                    <div class="step-card">
-                        <div class="step-num">1</div>
-                        <p class="step-txt">Качай клиент: <strong>v2rayNG</strong> на Android, <strong>v2rayN</strong> на Windows или <strong>Shadowrocket / Streisand</strong> на iPhone.</p>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-num">2</div>
-                        <p class="step-txt">Зайди во вкладку «Генератор», дождись загрузки и скопируй свежую ссылку.</p>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-num">3</div>
-                        <p class="step-txt">В приложении найди раздел подписок (<strong>Subscription setup</strong>), вставь адрес, обнови конфиги и кликай <strong>Подключиться</strong>!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ВКЛАДКА 3: О СЕРВИСЕ -->
-            <div id="about-tab" class="tab-content">
-                <h2>Для кого этот проект?</h2>
-                <p>H63 BRO VPN собран вручную для обхода умных систем блокировок (DPI). Мы не режем скорость и не собираем логи.</p>
-                <p>Весь твой трафик шифруется и маскируется под обычный серфинг сайтов, так что ни один провайдер не поймет, что ты сидишь через VPN. Чистый, свободный интернет для бро.</p>
-            </div>
-
-        </div>
-    </main>
-
-    <footer>
-        <a href="https://t.me/h63bro" target="_blank" class="tg-btn">
-            ✈ Канал проекта: @h63bro
+    <div class="steps-container">
+        <a id="btnTask1" href="https://t.me/granitvpnbot?start=ref6628364739" target="_blank" class="btn btn-task" onclick="startTimer(1)">
+            1. Пройти капчу в боте
         </a>
-    </footer>
 
-    <script>
-        // Твоя новая обновленная ссылка
-        const myGistUrl = "https://gist.githubusercontent.com/bitmrazey-eng/a2807c1c68c007244d20dc8408fbf831/raw/a9dd48218f4fe048b463cc33a685b4db186f2768/GetNewVPN";
+        <a id="btnTask2" href="https://t.me/h63bro" target="_blank" class="btn btn-task" onclick="startTimer(2)">
+            2. Подписаться на канал
+        </a>
 
-        function switchTab(event, tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+        <a id="finalAction" href="https://gist.githubusercontent.com/bitmrazey-eng/8bf9fa0968bca4fb53c4cd2454155f27/raw/b4e6af4cea652fc6494cbd0adbc808129f8ce005/gistfile1.txt" target="_blank" class="btn">
+            Получить VPN H63BRO
+        </a>
+    </div>
+
+    <div class="footer-note" id="footerNote">
+        Нажмите на кнопки по очереди. Ссылки откроются в Telegram, а на сайте начнется отсчет.
+    </div>
+</div>
+
+<script>
+    // Переменные состояния
+    let task1Done = false;
+    let task2Done = false;
+
+    function startTimer(taskNumber) {
+        const btn = document.getElementById(`btnTask${taskNumber}`);
+        let timeLeft = 30;
+
+        // Блокируем кнопку добавлением класса
+        btn.classList.add('waiting');
+        
+        const countdown = setInterval(() => {
+            btn.innerHTML = `Проверка... (${timeLeft} сек)`;
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(countdown);
+                
+                // Меняем внешний вид на выполненный
+                btn.classList.remove('waiting');
+                btn.classList.add('completed');
+                btn.innerHTML = taskNumber === 1 ? "✓ Капча пройдена" : "✓ Канал проверен";
+                
+                if (taskNumber === 1) task1Done = true;
+                if (taskNumber === 2) task2Done = true;
+
+                // Проверяем, готовы ли обе кнопки
+                checkFinalStatus();
+            }
+        }, 1000);
+    }
+
+    function checkFinalStatus() {
+        if (task1Done && task2Done) {
+            const finalBtn = document.getElementById('finalAction');
+            const note = document.getElementById('footerNote');
+            const instr = document.getElementById('mainInstruction');
+
+            // Плавно показываем белую финальную кнопку
+            finalBtn.style.display = 'flex';
+            finalBtn.classList.add('fade-in');
+
+            instr.innerHTML = "Все условия успешно выполнены!";
+            note.innerHTML = "Доступ открыт. Кнопка получения VPN активирована.";
+            note.style.color = '#22c55e'; // Зеленый текст успеха
         }
+    }
+</script>
 
-        const goBtn = document.getElementById('go-btn');
-        const loader = document.getElementById('loader');
-        const percentVal = document.getElementById('percent-val');
-        const linkBox = document.getElementById('link-box');
-        const targetLink = document.getElementById('target-link');
-        const copyBtn = document.getElementById('copy-btn');
-
-        goBtn.addEventListener('click', () => {
-            goBtn.disabled = true;
-            linkBox.style.display = 'none';
-            loader.style.display = 'block';
-            
-            let count = 0;
-            const timer = setInterval(() => {
-                count += Math.floor(Math.random() * 5) + 2; 
-                
-                if (count >= 100) {
-                    count = 100;
-                    clearInterval(timer);
-                    
-                    loader.style.display = 'none';
-                    targetLink.textContent = myGistUrl;
-                    linkBox.style.display = 'block';
-                    
-                    goBtn.disabled = false;
-                    goBtn.textContent = 'Обновить ссылку подписки';
-                }
-                percentVal.textContent = count + '%';
-            }, 60);
-        });
-
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(myGistUrl).then(() => {
-                copyBtn.textContent = 'Успешно! 🎉';
-                copyBtn.style.background = 'var(--cyan)';
-                copyBtn.style.color = '#000';
-                
-                setTimeout(() => {
-                    copyBtn.textContent = 'КОПИРОВАТЬ';
-                    copyBtn.style.background = 'var(--orange)';
-                    copyBtn.style.color = '#fff';
-                }, 2000);
-            });
-        });
-    </script>
 </body>
 </html>
